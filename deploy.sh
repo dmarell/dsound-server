@@ -8,7 +8,11 @@ deviceNamePattern=$5
 # Stop service
 ssh -l ${username} ${targetHost} "sudo service dsound-server stop"
 
-# copy new files to target host
+# Initalizations
+ssh -l ${username} ${targetHost} "mkdir -p ${deployDir}"
+ssh -l ${username} ${targetHost} "sudo usermod -a -G audio pi"
+
+# Copy new files to target host
 scp target/dsound-server-${version}.jar ${username}@${targetHost}:${deployDir}/dsound-server.jar
 scp dsound-server.conf ${username}@${targetHost}:${deployDir}/
 
