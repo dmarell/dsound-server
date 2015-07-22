@@ -15,18 +15,10 @@
         </encoder>
     </appender>
 
-    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
     <logger name="org.springframework" level="INFO"/>
-
-    <!-- Should be INFO in prod -->
-    <logger name="se.marell.dsoundserver" level="TRACE"/>
+    <logger name="se.marell.dsoundserver" level="INFO"/>
 
     <root level="TRACE">
-        <appender-ref ref="consoleAppender" />
+        <appender-ref ref="file" />
     </root>
 </configuration>

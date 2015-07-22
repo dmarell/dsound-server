@@ -3,13 +3,18 @@ version=$1
 targetHost=$2
 username=$3
 deployDir=$4
+deviceNamePattern=$5
 
-# copy files to target host
-ssh -l ${username} ${targetHost} "cd ${deployDir}; [ ! -f dsound-server.jar ] || mv -f dsound-server.jar dsound-server.jar.old"
-scp dsound-server/target/dvision-server-${version}.jar ${username}@${targetHost}:${deployDir}/dsound-server.jar
+# Stop service
+ssh -l ${username} ${targetHost} "sudo service dsound-server stop"
 
-# Restart service
-ssh -l ${username} ${targetHost} "sudo service dsound-server restart"
+# copy new files to target host
+scp target/dsound-server-${version}.jar ${username}@${targetHost}:${deployDir}/dsound-server.jar
+scp dsound-server.conf ${username}@${targetHost}:${deployDir}/
 
-# Initialization on targetHost:
-# $ sudo cp dsound-server.conf /etc/init
+# Install upstart service file and start the service
+ssh -l ${username} ${targetHost} "\
+  sudo sed -i 's/DEVICE_NAME_PATTERN/${deviceNamePattern}/g' ${deployDir}/dsound-server.conf; \
+  sudo cp ${deployDir}/dsound-server.conf /etc/init; \
+  sudo service dsound-server start \
+  "

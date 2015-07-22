@@ -53,9 +53,11 @@ public class PlayController {
             }
         }
 
+        logSoundPlayerDeviceNames();
+
         soundPlayerDevice = SoundPlayerDevice.createSoundPlayerDevice(deviceNamePattern);
         if (soundPlayerDevice != null) {
-            log.info("Using sound player device: " + deviceNamePattern);
+            log.info("Using sound player device: " + soundPlayerDevice.toString());
         } else {
             log.info("Could not find specified sound playback device matching pattern \"" +
                     deviceNamePattern + "\". Using default");
@@ -67,6 +69,17 @@ public class PlayController {
                 throw new IOException("Failed to create directory " + soundFileDirectory);
             }
         }
+    }
+
+    private void logSoundPlayerDeviceNames() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : SoundPlayerDevice.getPlayerDeviceNames()) {
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            sb.append("\t" + s);
+        }
+        log.info("Existing sound player devices:\n" + sb.toString());
     }
 
     private String selectSoundPlayerDevice() {
