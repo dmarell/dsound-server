@@ -6,6 +6,18 @@ username=$3
 deployDir=$4
 deviceNamePattern=$5
 
+# The deviceNamePattern should match one of the devices reported in the log when starting up:
+#
+# 2015-07-23 07:11:40,498 [main] INFO  s.m.dsoundserver.PlayController - Existing sound player devices:
+# 	ALSA [default]
+# 	ALSA [plughw:0,0]
+# 	ALSA [plughw:0,1]
+# 	U0xccd0x77 [plughw:1,0]
+#
+# In order the match the last entry in this example (a USB-sound card), pass the value "U0xccd0x77.*"
+# as the fifth parameter to this script.
+#
+
 # Stop service
 ssh -l ${username} ${targetHost} "sudo service dsound-server stop" 2> /dev/null
 

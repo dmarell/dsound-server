@@ -104,8 +104,15 @@ public class PlayController {
         return BuildInfo.getAppVersion();
     }
 
-    @RequestMapping(value = "/sound-clips/{soundClipName:.+}", method = RequestMethod.GET)
-    public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName) {
+    /**
+     * Replay named sound clip. Use this method in order to avoid resending sound data if it has already been sent.
+     * @param soundClipName Name of a previously played sound clip.
+     * @param volume A value between 0 and 1
+     * @return HTTP response
+     */
+    @RequestMapping(value = "/sound-clips/{soundClipName:.+}?volume={volume}", method = RequestMethod.GET)
+    public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName,
+                                     @RequestParam(required = false) Float volume) {
         Path soundFilePath = Paths.get(soundFileDirectory, soundClipName);
         if (soundPlayerDevice == null) {
             log.error("No sound player device available");
@@ -119,7 +126,11 @@ public class PlayController {
                 () -> log.trace("Ready playing clip " + soundClipName + " on device " + soundPlayerDevice));
         try {
             log.info("Playing clip " + soundClipName + " on device " + soundPlayerDevice);
-            player.play(soundPlayerDevice);
+            if (volume == null) {
+                player.play(soundPlayerDevice);
+            } else {
+                player.play(soundPlayerDevice, volume);
+            }
         } catch (AudioException e) {
             log.error("Failed to play file " + soundClipName + ": " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,12 +138,21 @@ public class PlayController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/sound-clips/{soundClipName:.+}", method = RequestMethod.POST)
+    /**
+     * Play sound clip.
+     * @param soundClipName Your name of the sound clip. Could be the filename.
+     * @param soundData Raw data from sound file
+     * @param volume A value between 0 and 1
+     * @return HTTP response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/sound-clips/{soundClipName:.+}volume={volume}", method = RequestMethod.POST)
     public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName,
-                                     @RequestBody byte[] soundData) throws IOException {
+                                     @RequestBody byte[] soundData,
+                                     @RequestParam(required = false) Float volume) throws IOException {
         log.info("Saving data for clip " + soundClipName);
         Files.write(Paths.get(soundFileDirectory, soundClipName), soundData);
-        return play(soundClipName);
+        return play(soundClipName, volume);
     }
 
     /**
@@ -153,6 +173,11 @@ public class PlayController {
         return result;
     }
 
+    /**
+     * Clear the sound file cache.
+     * @return HTTP response
+     * @throws IOException If any of the files could not be deleted
+     */
     @RequestMapping(value = "/cache", method = RequestMethod.DELETE)
     public ResponseEntity<Void> clearSoundCache() throws IOException {
         try {

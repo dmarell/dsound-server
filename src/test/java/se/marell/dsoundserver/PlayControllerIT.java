@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import se.marell.dsoundclient.SoundPlayer;
+import se.marell.dsoundclient.SoundPlayerClient;
 
 import java.util.List;
 
@@ -40,9 +40,9 @@ public class PlayControllerIT {
 
     @Test
     public void shouldNotPlayUnknownSoundClipName() throws Exception {
-        SoundPlayer player = new SoundPlayer(BASE_URL);
+        SoundPlayerClient player = new SoundPlayerClient(BASE_URL);
         try {
-            player.play("yes.wav");
+            player.play("yes.wav", 1f);
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         }
@@ -50,19 +50,19 @@ public class PlayControllerIT {
 
     @Test
     public void shouldPlayTwoClipsGivenSoundData() throws Exception {
-        SoundPlayer player = new SoundPlayer(BASE_URL);
+        SoundPlayerClient player = new SoundPlayerClient(BASE_URL);
         try {
-            player.play("yes.wav");
+            player.play("yes.wav", 1f);
             fail("Expected exception");
         } catch (HttpClientErrorException ignore) {
         }
 
-        player.play("yes.wav", getClass().getResourceAsStream("/yes.wav"));
+        player.play("yes.wav", 1f, getClass().getResourceAsStream("/yes.wav"));
         List<String> cachedNames = player.getCachedSoundClipNames();
         assertThat(cachedNames.size(), is(1));
         assertThat(cachedNames, contains("yes.wav"));
 
-        player.play("no.wav", getClass().getResourceAsStream("/no.wav"));
+        player.play("no.wav", 1f, getClass().getResourceAsStream("/no.wav"));
         cachedNames = player.getCachedSoundClipNames();
         assertThat(cachedNames.size(), is(2));
         assertThat(cachedNames, containsInAnyOrder("yes.wav", "no.wav"));
