@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 version=$1
 targetHost=$2
@@ -8,7 +7,9 @@ deployDir=$4
 deviceNamePattern=$5
 
 # Stop service
-ssh -l ${username} ${targetHost} "sudo service dsound-server stop"
+ssh -l ${username} ${targetHost} "sudo service dsound-server stop" 2> /dev/null
+
+set -e
 
 # Initalizations
 ssh -l ${username} ${targetHost} "mkdir -p ${deployDir}"
