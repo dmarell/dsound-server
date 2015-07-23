@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import se.marell.dcommons.sound.AudioException;
 import se.marell.dcommons.sound.SoundClip;
 import se.marell.dcommons.sound.SoundPlayerDevice;
+import se.marell.dvesta.system.BuildInfo;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
