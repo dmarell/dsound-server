@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 version=$1
 targetHost=$2
 username=$3
