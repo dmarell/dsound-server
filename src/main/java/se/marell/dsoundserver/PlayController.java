@@ -146,7 +146,7 @@ public class PlayController {
      * @return HTTP response
      * @throws IOException
      */
-    @RequestMapping(value = "/sound-clips/{soundClipName:.+}volume={volume}", method = RequestMethod.POST)
+    @RequestMapping(value = "/sound-clips/{soundClipName:.+}?volume={volume}", method = RequestMethod.POST)
     public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName,
                                      @RequestBody byte[] soundData,
                                      @RequestParam(required = false) Float volume) throws IOException {
