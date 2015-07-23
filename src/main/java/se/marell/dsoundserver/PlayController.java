@@ -110,9 +110,9 @@ public class PlayController {
      * @param volume A value between 0 and 1
      * @return HTTP response
      */
-    @RequestMapping(value = "/sound-clips/{soundClipName:.+}?volume={volume}", method = RequestMethod.GET)
+    @RequestMapping(value = "/sound-clips/{soundClipName:.+}", method = RequestMethod.GET)
     public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName,
-                                     @RequestParam(required = false) Float volume) {
+                                     @RequestParam Float volume) {
         Path soundFilePath = Paths.get(soundFileDirectory, soundClipName);
         if (soundPlayerDevice == null) {
             log.error("No sound player device available");
@@ -146,10 +146,10 @@ public class PlayController {
      * @return HTTP response
      * @throws IOException
      */
-    @RequestMapping(value = "/sound-clips/{soundClipName:.+}?volume={volume}", method = RequestMethod.POST)
+    @RequestMapping(value = "/sound-clips/{soundClipName:.+}", method = RequestMethod.POST)
     public ResponseEntity<Void> play(@PathVariable(value = "soundClipName") String soundClipName,
                                      @RequestBody byte[] soundData,
-                                     @RequestParam(required = false) Float volume) throws IOException {
+                                     @RequestParam Float volume) throws IOException {
         log.info("Saving data for clip " + soundClipName);
         Files.write(Paths.get(soundFileDirectory, soundClipName), soundData);
         return play(soundClipName, volume);

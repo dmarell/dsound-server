@@ -19,10 +19,10 @@ will create a directory dsound-file-cache below this path.
 The proper way to set these properties are in the upstart config file: dsound-server.conf
 
 ### Release notes
+* Version 1.0.1 - 2015-07-23
+  * Added request parameter volume
 * Version 1.0.0 - 2015-07-22
   * First version.
-* Version 1.0.1 - 2015-07-23
-  * Added optional request parameter volume
 
 ### Backlog
 * Interrupt playing sound clip
